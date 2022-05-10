@@ -1458,9 +1458,16 @@ DOC load daily meas interpolated=
 
 DOC load daily sim=
 	IF THEN ELSE(Time>=Initial DOC Time, DOC conc in streamflow*streamflow*Watershed Area
-/10, 0)
-	~	gC/m2/day
-	~	Only calculate during period when DOC was measured
+*10, 0)
+	~	kg/km2/day
+	~	Only calculate during period when DOC was measured NOTE that the Watershed Area \
+		Variable has been converted to km2
+		
+		Unit conversion:
+		Concentration (kg/m3) * discharge(m3/d)
+		Concentration (kg/m3) * (discharge(m/d)* Watershed area (m2))
+		conc(g/m3)*1kg/1000g)* discharge (cm/d)*(1m/100cm)*area(km2)*(1000000 \
+		m2/km2)
 	|
 
 Mo Cum Step DOC meas interpolated Delay= DELAY FIXED (
@@ -2159,7 +2166,7 @@ INITIAL TIME =
 	|
 
 SAVEPER  = 
-        TIME STEP 
+        TIME STEP
 	~	day [0,?]
 	~	The frequency with which output is stored.
 	|
@@ -3593,6 +3600,7 @@ Last Modified
 95:1
 96:0
 97:0
+98:1
 77:1
 78:0
 102:0

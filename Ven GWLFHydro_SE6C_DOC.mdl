@@ -149,30 +149,9 @@ DOC calib file name:IS:
 	~	
 	~		|
 
-Channel runoff loss=
-	MIN((stored channel load),((stored channel load)*ChannelFlowCoef))
-	~	gC/m2/day
-	~		|
-
-stored channel load= INTEG (
-	stored runoff DOC loss-Channel runoff loss,
-		0)
-	~	gC/m2/day
-	~		|
-
 direct runoff loss=
 	runoff loss*ChannelFlowCoef
 	~	
-	~		|
-
-total daily DOC loss=
-	total loss in gwflow+direct runoff loss+Channel runoff loss
-	~	gC/m2/day
-	~		|
-
-stored runoff DOC loss=
-	runoff loss*(1-ChannelFlowCoef)
-	~	gC/m2/day
 	~		|
 
 INIT DEEP SATZONE=
@@ -733,6 +712,27 @@ WaterBalance3RMS=
 	.DOC
 ********************************************************~
 	|
+
+Channel runoff loss=
+	MIN((stored channel load),((stored channel load)*ChannelFlowCoef))
+	~	gC/m2/day
+	~		|
+
+stored channel load= INTEG (
+	stored runoff DOC loss-Channel runoff loss,
+		0)
+	~	gC/m2/day
+	~		|
+
+total daily DOC loss=
+	total loss in gwflow+direct runoff loss+Channel runoff loss
+	~	gC/m2/day
+	~		|
+
+stored runoff DOC loss=
+	runoff loss*(1-ChannelFlowCoef)
+	~	gC/m2/day
+	~		|
 
 total DOC loss=
 	total loss in gwflow+runoff loss
@@ -1451,16 +1451,39 @@ Point Meas DOC=
 
 DOC load daily meas interpolated=
 	IF THEN ELSE(Time>=Initial DOC Time, meas interpolated DOC*Meas Streamflow*Watershed Area
-/10, 0)
+ *10, 0)
 	~	
-	~	Only calculate at times DOC is measured
+	~	Calculated at every time step using measured values and the intpolated value between \
+		them.  This is what would noramlly be done with measured daily discharge \
+		and less frequent concentration measurments. NOTE that the Watershed Area \
+		Variable has been converted to km2
+		
+		Unit conversion:
+		Concentration (kg/m3) * discharge(m3/d)
+		Concentration (kg/m3) * (discharge(m/d)* Watershed area (m2))
+		conc(g/m3)*1kg/1000g)* discharge (cm/d)*(1m/100cm)*area(km2)*(1000000 m2/km2)
+		
+		This means that in the end using the units presently in the model
+		Concentration (mg/l) * discharge (cm/d) * watershed area (km) * 10 = load \
+		kg/km2/d
 	|
 
 DOC load daily sim=
 	IF THEN ELSE(Time>=Initial DOC Time, DOC conc in streamflow*streamflow*Watershed Area
-/10, 0)
-	~	gC/m2/day
-	~	Only calculate during period when DOC was measured
+*10, 0)
+	~	kg/km2/day
+	~	Calculated from simulated daily measurments of stream discharge and DOC \
+		concentration. NOTE that the Watershed Area Variable has been converted to \
+		km2
+		
+		Unit conversion:
+		Concentration (kg/m3) * discharge(m3/d)
+		Concentration (kg/m3) * (discharge(m/d)* Watershed area (m2))
+		conc(g/m3)*1kg/1000g)* discharge (cm/d)*(1m/100cm)*area(km2)*(1000000 m2/km2)
+		
+		This means that in the end using the units presently in the model
+		Concentration (mg/l) * discharge (cm/d) * watershed area (km) * 10 = load \
+		kg/km2/d
 	|
 
 Mo Cum Step DOC meas interpolated Delay= DELAY FIXED (
@@ -2159,7 +2182,7 @@ INITIAL TIME =
 	|
 
 SAVEPER  = 
-        TIME STEP 
+        TIME STEP
 	~	day [0,?]
 	~	The frequency with which output is stored.
 	|
