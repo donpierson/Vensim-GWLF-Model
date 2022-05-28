@@ -1,14 +1,14 @@
-4:Base Calendar Year
-5:C conc in runoff lu DOC
-6:Coniferous forest
+1:Test1.vdfx
+1:BaseRun.vdfx
+4:Time
+5:Temperature Limited Carbon Decomposition
 6:Continuous urban
 6:D1
 6:Dormant
-6:Growing
 6:T1
-9:Step9_DOC_SE6C_Dalkarlshyttan_DOCMethod3
+9:Test1
 19:79,1
-21:Updated 24 April 2022 - Baseline run with Calibrated Hydrology and DOC Parameteres  b=0 New Moisture formula
-24:32143
+21:After reogainizing peat decomposition into two seperate components
+24:34043
 25:41256
 26:41256
